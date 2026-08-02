@@ -9,4 +9,7 @@ export interface CardSummit extends Card {
   duration: string;
   startDate: string;
   location: string;
+  country: string;
+  description: string;
+  height: string;
 }

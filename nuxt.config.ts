@@ -1,5 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      BACKEND_URL: "http://localhost:8000/api",
+    },
+  },
+
   modules: [
     "@nuxt/eslint",
     "@nuxt/ui",
