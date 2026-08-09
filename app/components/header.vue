@@ -2,11 +2,12 @@
 const { y: scrollY } = useWindowScroll();
 
 const isScrolled = computed(() => scrollY.value > 0);
+const route = useRoute();
 </script>
 <template>
   <div
     :class="
-      isScrolled
+      isScrolled || route.path !== '/'
         ? 'text-black bg-white border-b border-slate-200'
         : 'text-white bg-transparent'
     "
@@ -30,7 +31,7 @@ const isScrolled = computed(() => scrollY.value > 0);
       >
     </div>
     <div class="h-full overflow-hidden">
-      <img src="/img/logo.png" alt="Logo" class="h-full w-auto scale-125" />
+      <p>Log out</p>
     </div>
   </div>
 </template>

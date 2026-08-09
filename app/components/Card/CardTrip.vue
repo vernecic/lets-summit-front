@@ -1,64 +1,71 @@
 <script setup lang="ts">
 const props = defineProps<{
   data: {
+    id: string;
     title: string;
     description: string;
+    short_description: string;
     duration: string;
-    height: string;
-    difficulty: string;
+    elevation: string;
+    difficulty: Difficulty;
     image: string;
+    location: string;
+    country: string;
   };
 }>();
+
+export type Difficulty = "easy" | "moderate" | "hard" | "extreme";
+
+const difficultyColor = {
+  easy: "success",
+  moderate: "primary",
+  hard: "warning",
+  extreme: "error",
+} as const;
 </script>
 <template>
   <div
-    class="flex border border-slate-200 flex-col overflow-hidden rounded-2xl group shadow-lg bg-white"
+    class="flex hover:bg-gray-100 cursor-pointer transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 flex-col gap-2 group bg-white p-4 rounded-lg border border-gray-200 shadow-sm"
   >
-    <div class="relative aspect-[4/3] overflow-hidden">
-      <NuxtImg
-        src="/img/matterhorn.jpg"
-        alt="Matterhorn"
-        class="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition duration-300"
-      />
+    <div class="flex items-center justify-between">
+      <h3 class="font-display text-3xl font-medium">{{ props.data.title }}</h3>
       <UBadge
-        class="absolute left-3 top-3 z-10"
-        color="error"
+        class="capitalize"
+        :color="difficultyColor[props.data.difficulty]"
         variant="solid"
         size="lg"
-        >Extreme</UBadge
       >
+        {{ props.data.difficulty }}
+      </UBadge>
     </div>
-
-    <div class="flex flex-1 flex-col p-5">
-      <div class="flex items-start justify-between gap-3">
-        <h3 class="text-2xl font-display text-slate-900">Matterhorn</h3>
-        <span
-          class="mt-1 flex shrink-0 items-center gap-1 text-sm font-medium text-slate-500"
-        >
-          <UIcon name="i-lucide-mountain" class="size-4" />
-          4478 m
-        </span>
-      </div>
-
-      <p class="mt-2 text-sm leading-relaxed text-slate-500 flex-1">
-        Switzerland's iconic peak at 4,478 m. A challenging two-day alpine climb
-        via the Hörnli Ridge, with a mountain hut stay before the final summit
-        ascent.
-      </p>
-
-      <div class="mt-4 flex items-center gap-1.5 text-sm text-slate-500">
-        <UIcon name="i-lucide-clock" class="size-4" />
-        2 days
-      </div>
-
-      <UButton
-        block
-        color="primary"
+    <div class="flex-1">
+      <p class="text-sm">{{ props.data.short_description }}</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <UBadge
+        variant="soft"
+        color="neutral"
         size="lg"
-        class="mt-5 cursor-pointer rounded-full text-black"
+        trailing-icon="i-lucide-clock"
       >
-        Join now
-      </UButton>
+        {{ props.data.duration }}
+      </UBadge>
+      <UBadge
+        variant="soft"
+        color="neutral"
+        size="lg"
+        trailing-icon="i-lucide-mountain"
+      >
+        {{ props.data.elevation }}
+      </UBadge>
+      <UBadge
+        variant="soft"
+        color="neutral"
+        size="lg"
+        trailing-icon="i-lucide-map-pin"
+      >
+        {{ props.data.location }}
+      </UBadge>
     </div>
   </div>
 </template>
