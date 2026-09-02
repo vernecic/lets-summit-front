@@ -5,14 +5,12 @@ const config = useRuntimeConfig();
 const route = useRoute();
 const params = route.params as { id: string };
 
-const imageFolder = "img";
-
 const url = `${config.public.BACKEND_URL}/trips/${params.id}`;
 const { data: trip, error } = await useFetch<CardSummit>(url);
 </script>
 
 <template>
-  <div v-if="trip" class="py-20 px-40 min-h-screen">
+  <div v-if="trip" class="py-20 max-w-4xl mx-auto px-40 min-h-screen">
     <div class="flex gap-20">
       <div class="flex flex-col gap-6">
         <div class="flex gap-2 items-center">

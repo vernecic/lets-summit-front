@@ -32,7 +32,7 @@ const difficultyColor = {
       <UBadge
         class="capitalize"
         :color="difficultyColor[props.data.difficulty]"
-        variant="solid"
+        variant="soft"
         size="lg"
       >
         {{ props.data.difficulty }}
@@ -66,6 +66,17 @@ const difficultyColor = {
       >
         {{ props.data.location }}
       </UBadge>
+    </div>
+    <div>
+      <UButton
+        :to="{ name: 'trips-id', params: { id: props.data.id } }"
+        variant="solid"
+        color="primary"
+        size="lg"
+        class="w-full flex justify-center mt-2"
+      >
+        See more
+      </UButton>
     </div>
   </div>
 </template>

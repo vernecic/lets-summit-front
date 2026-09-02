@@ -3,6 +3,8 @@ const { y: scrollY } = useWindowScroll();
 
 const isScrolled = computed(() => scrollY.value > 0);
 const route = useRoute();
+
+const { isLoggedIn, logout } = useAuth();
 </script>
 <template>
   <div
@@ -15,23 +17,43 @@ const route = useRoute();
   >
     <div class="flex gap-4 items-center">
       <nuxt-link
-        to="explore"
+        to="/trips"
         class="cursor-pointer hover:text-gray-300 transition duration-300"
         >Explore</nuxt-link
       >
       <nuxt-link
-        to="create-trip"
+        v-if="isLoggedIn"
+        to="/create-trip"
         class="cursor-pointer hover:text-gray-300 transition duration-300"
         >Create Trip</nuxt-link
       >
       <nuxt-link
-        to="my-trips"
+        v-if="isLoggedIn"
+        to="/my-trips"
         class="cursor-pointer hover:text-gray-300 transition duration-300"
         >My Trips</nuxt-link
       >
     </div>
-    <div class="h-full overflow-hidden">
-      <p>Log out</p>
+    <div class="flex gap-4 items-center">
+      <button
+        v-if="isLoggedIn"
+        class="cursor-pointer hover:text-gray-300 transition duration-300"
+        @click="logout"
+      >
+        Log out
+      </button>
+      <nuxt-link
+        v-if="!isLoggedIn"
+        to="/login"
+        class="cursor-pointer hover:text-gray-300 transition duration-300"
+        >Log in</nuxt-link
+      >
+      <nuxt-link
+        v-if="!isLoggedIn"
+        to="/register"
+        class="cursor-pointer hover:text-gray-300 transition duration-300"
+        >Register</nuxt-link
+      >
     </div>
   </div>
 </template>

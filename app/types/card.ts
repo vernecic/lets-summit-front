@@ -13,4 +13,7 @@ export interface CardSummit extends Card {
   country: string;
   description: string;
   elevation: string;
+  ownerId: string;
+  participants: string[];
+  join_requests: string[];
 }
