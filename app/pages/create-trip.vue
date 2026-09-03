@@ -5,14 +5,21 @@ const state = reactive({
   country: "",
   elevation: 3000,
   difficulty: "",
-  shortDescription: "",
   description: "",
-  short_description: "",
+  shortDescription: "",
   maxParticipants: 10,
 });
 const config = useRuntimeConfig();
 
-const countries = ["Croatia", "Slovenia", "Austria", "Italy", "Switzerland"];
+const countries = [
+  "Croatia",
+  "Slovenia",
+  "Austria",
+  "Italy",
+  "Switzerland",
+  "France",
+  "Nepal",
+];
 
 const difficulties = [
   { label: "Easy", value: "easy" },
@@ -25,7 +32,9 @@ const onSubmit = async () => {
   await $fetch(`${config.public.BACKEND_URL}/trips`, {
     method: "POST",
     body: state,
+    credentials: "include",
   });
+  await navigateTo("/");
 };
 
 const SHORT_DESCRIPTION_MAX = 120;
@@ -71,7 +80,6 @@ const SHORT_DESCRIPTION_MAX = 120;
           <UInputNumber
             v-model="state.elevation"
             :min="0"
-            :step="50"
             placeholder="3000"
             class="w-full"
           />
@@ -88,9 +96,9 @@ const SHORT_DESCRIPTION_MAX = 120;
         </UFormField>
       </div>
 
-      <UFormField label="Short description" name="short_description">
+      <UFormField label="Short description" name="shortDescription">
         <UInput
-          v-model="state.short_description"
+          v-model="state.shortDescription"
           :maxlength="SHORT_DESCRIPTION_MAX"
           placeholder="Write a short desc."
           class="w-full"

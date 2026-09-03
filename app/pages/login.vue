@@ -4,19 +4,17 @@ const state = reactive({
   password: "",
 });
 
-const config = useRuntimeConfig();
 const errorMessage = ref("");
+
+const { login } = useAuth();
 
 const onSubmit = async () => {
   errorMessage.value = "";
   try {
-    await $fetch(`${config.public.BACKEND_URL}/login`, {
-      method: "POST",
-      body: state,
-    });
-    await navigateTo("/trips");
+    await login(state.username, state.password);
+    await navigateTo("/");
   } catch (error) {
-    console.log(error);
+    errorMessage.value = "Neuspješna prijava";
   }
 };
 </script>

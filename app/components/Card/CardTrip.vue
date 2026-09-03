@@ -4,7 +4,7 @@ const props = defineProps<{
     id: string;
     title: string;
     description: string;
-    short_description: string;
+    shortDescription: string;
     duration: string;
     elevation: string;
     difficulty: Difficulty;
@@ -39,7 +39,7 @@ const difficultyColor = {
       </UBadge>
     </div>
     <div class="flex-1">
-      <p class="text-sm">{{ props.data.short_description }}</p>
+      <p class="text-sm">{{ props.data.shortDescription }}</p>
     </div>
     <div class="flex flex-wrap gap-2">
       <UBadge

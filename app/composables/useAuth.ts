@@ -1,24 +1,37 @@
+import type { User } from "~/types/user";
+
+interface UserResponse {
+  user: User;
+}
+
 export const useAuth = () => {
   const config = useRuntimeConfig();
-  const currentUser = useState("user", () => null);
+  const currentUser = useState<User | null>("user", () => null);
+  const isLoggedIn = computed(() => !!currentUser.value);
 
   const getCurrentUser = async () => {
     try {
-      const response = await $fetch(`${config.public.BACKEND_URL}/me`, {
-        credentials: "include",
-      });
+      const response = await $fetch<UserResponse>(
+        `${config.public.BACKEND_URL}/me`,
+        {
+          credentials: "include",
+        },
+      );
       currentUser.value = response.user;
     } catch (error) {
       currentUser.value = null;
     }
   };
 
-  const login = async (username, password) => {
-    const response = await $fetch(`${config.public.BACKEND_URL}/login`, {
-      method: "POST",
-      credentials: "include",
-      body: { username, password },
-    });
+  const login = async (username: string, password: string) => {
+    const response = await $fetch<UserResponse>(
+      `${config.public.BACKEND_URL}/login`,
+      {
+        method: "POST",
+        credentials: "include",
+        body: { username, password },
+      },
+    );
     currentUser.value = response.user;
   };
 
@@ -34,11 +47,6 @@ export const useAuth = () => {
     currentUser.value = null;
     await navigateTo("/login");
   };
-
-  const isLoggedIn = computed(() => {
-    if (!currentUser.value) return false;
-    return true;
-  });
 
   return { currentUser, isLoggedIn, getCurrentUser, login, logout };
 };

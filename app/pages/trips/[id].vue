@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import type { CardSummit } from "~/types/card";
 
+const { currentUser } = useAuth();
+
+const isUserOwner = computed(() => {
+  if (!currentUser.value) return false;
+  return currentUser.value._id === trip.value?.ownerId;
+});
+
 const config = useRuntimeConfig();
 const route = useRoute();
 const params = route.params as { id: string };
