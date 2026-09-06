@@ -5,6 +5,7 @@ const props = defineProps<{
     title: string;
     description: string;
     shortDescription: string;
+    date: string;
     duration: string;
     elevation: string;
     difficulty: Difficulty;
@@ -22,6 +23,15 @@ const difficultyColor = {
   hard: "warning",
   extreme: "error",
 } as const;
+
+const formatedDate = computed(() => {
+  const date = new Date(props.data.date);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+});
 </script>
 <template>
   <div
@@ -43,27 +53,21 @@ const difficultyColor = {
     </div>
     <div class="flex flex-wrap gap-2">
       <UBadge
+        v-if="formatedDate"
         variant="soft"
         color="neutral"
         size="lg"
-        trailing-icon="i-lucide-clock"
+        icon="i-lucide-calendar"
       >
-        {{ props.data.duration }}
+        {{ formatedDate }}
       </UBadge>
-      <UBadge
-        variant="soft"
-        color="neutral"
-        size="lg"
-        trailing-icon="i-lucide-mountain"
-      >
+      <UBadge variant="soft" color="neutral" size="lg" icon="i-lucide-clock">
+        {{ props.data.duration }}h
+      </UBadge>
+      <UBadge variant="soft" color="neutral" size="lg" icon="i-lucide-mountain">
         {{ props.data.elevation }}
       </UBadge>
-      <UBadge
-        variant="soft"
-        color="neutral"
-        size="lg"
-        trailing-icon="i-lucide-map-pin"
-      >
+      <UBadge variant="soft" color="neutral" size="lg" icon="i-lucide-map-pin">
         {{ props.data.location }}
       </UBadge>
     </div>

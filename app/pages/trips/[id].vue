@@ -20,6 +20,20 @@ const deleteTrip = async () => {
   navigateTo("/");
 };
 
+const joinTrip = async () => {
+  await $fetch(`${config.public.BACKEND_URL}/trips/${params.id}/join`, {
+    method: "POST",
+    credentials: "include",
+  });
+};
+
+const leaveTrip = async () => {
+  await $fetch(`${config.public.BACKEND_URL}/trips/${params.id}/leave`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+};
+
 const url = `${config.public.BACKEND_URL}/trips/${params.id}`;
 const { data: trip } = await useFetch<CardSummit>(url);
 </script>
@@ -51,6 +65,14 @@ const { data: trip } = await useFetch<CardSummit>(url);
         variant="solid"
         class="cursor-pointer"
         >Delete Trip</UButton
+      >
+      <UButton
+        @click="joinTrip"
+        v-else
+        color="success"
+        variant="solid"
+        class="cursor-pointer"
+        >Join Trip</UButton
       >
     </div>
   </div>

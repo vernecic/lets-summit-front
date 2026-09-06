@@ -1,10 +1,19 @@
 <script setup lang="ts">
+import {
+  CalendarDate,
+  DateFormatter,
+  getLocalTimeZone,
+  today,
+} from "@internationalized/date";
+
 const state = reactive({
   title: "",
+  date: "",
   location: "",
   country: "",
   elevation: 3000,
   difficulty: "",
+  duration: "",
   description: "",
   shortDescription: "",
   maxParticipants: 10,
@@ -28,6 +37,20 @@ const difficulties = [
   { label: "Extreme", value: "extreme" },
 ];
 
+const minDate = today(getLocalTimeZone());
+const selectedDate = shallowRef<CalendarDate | null>(null);
+const dateFormatter = new DateFormatter("hr-HR", { dateStyle: "short" });
+
+const formatedDate = computed(() => {
+  return selectedDate.value
+    ? dateFormatter.format(selectedDate.value.toDate(getLocalTimeZone()))
+    : "";
+});
+
+watch(selectedDate, (value) => {
+  state.date = value ? value.toString() : "";
+});
+
 const onSubmit = async () => {
   await $fetch(`${config.public.BACKEND_URL}/trips`, {
     method: "POST",
@@ -36,8 +59,6 @@ const onSubmit = async () => {
   });
   await navigateTo("/");
 };
-
-const SHORT_DESCRIPTION_MAX = 120;
 </script>
 
 <template>
@@ -59,6 +80,7 @@ const SHORT_DESCRIPTION_MAX = 120;
         <UFormField label="Location" name="location">
           <UInput
             v-model="state.location"
+            :maxlength="60"
             placeholder="Zermatt"
             icon="i-lucide-map-pin"
             class="w-full"
@@ -96,10 +118,20 @@ const SHORT_DESCRIPTION_MAX = 120;
         </UFormField>
       </div>
 
+      <UFormField label="Duration" name="duration" hint="in hours">
+        <UInput
+          v-model="state.duration"
+          :maxlength="30"
+          placeholder="Trip duration (hours)"
+          icon="i-lucide-clock"
+          class="w-full"
+        />
+      </UFormField>
+
       <UFormField label="Short description" name="shortDescription">
         <UInput
           v-model="state.shortDescription"
-          :maxlength="SHORT_DESCRIPTION_MAX"
+          :maxlength="100"
           placeholder="Write a short desc."
           class="w-full"
         />
@@ -108,19 +140,43 @@ const SHORT_DESCRIPTION_MAX = 120;
       <UFormField label="Description" name="description">
         <UTextarea
           v-model="state.description"
-          placeholder="Longer description..."
+          :maxlength="400"
+          placeholder="Longer description about the trip, weather, equipment, expectations..."
           class="w-full"
         />
       </UFormField>
 
-      <UFormField label="Number of participants" name="maxParticipants">
-        <UInputNumber
-          v-model="state.maxParticipants"
-          :min="1"
-          placeholder="8"
-          class="w-full sm:w-40"
-        />
-      </UFormField>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <UFormField label="Number of participants" name="maxParticipants">
+          <UInputNumber
+            v-model="state.maxParticipants"
+            :min="1"
+            placeholder="8"
+            class="w-full"
+          />
+        </UFormField>
+
+        <UFormField label="Date" name="date">
+          <UPopover>
+            <UButton
+              color="neutral"
+              variant="subtle"
+              icon="i-lucide-calendar"
+              class="w-full cursor-pointer"
+            >
+              {{ selectedDate ? formatedDate : "Pick a trip date" }}
+            </UButton>
+
+            <template #content>
+              <UCalendar
+                v-model="selectedDate"
+                :min-value="minDate"
+                class="p-2"
+              />
+            </template>
+          </UPopover>
+        </UFormField>
+      </div>
 
       <div class="flex justify-end gap-3 pt-2">
         <UButton
