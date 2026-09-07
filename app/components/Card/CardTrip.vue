@@ -6,8 +6,8 @@ const props = defineProps<{
     description: string;
     shortDescription: string;
     date: string;
-    duration: string;
-    elevation: string;
+    duration: number;
+    elevation: number;
     difficulty: Difficulty;
     image: string;
     location: string;

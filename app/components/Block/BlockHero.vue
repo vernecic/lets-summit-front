@@ -17,11 +17,12 @@
           Let's Summit
         </h1>
         <div>
-          <button
-            class="rounded-full bg-white text-black font-medium py-2 px-4 cursor-pointer hover:bg-gray-300 transition duration-300"
+          <nuxt-link
+            to="/trips"
+            class="inline-block rounded-full bg-white text-black font-medium py-2 px-4 cursor-pointer hover:bg-gray-300 transition duration-300"
           >
             Explore trips
-          </button>
+          </nuxt-link>
         </div>
       </div>
     </div>

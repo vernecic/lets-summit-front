@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { CardSummit } from "~/types/card";
+import type { CardTrip } from "~/types/card";
 const config = useRuntimeConfig();
 
-const { data: trips } = await useFetch<CardSummit[]>(
+const { data: trips } = await useFetch<CardTrip[]>(
   `${config.public.BACKEND_URL}/trips`,
 );
 

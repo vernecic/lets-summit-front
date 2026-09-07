@@ -1,19 +1,24 @@
 export interface Card {
   id: string;
 }
+export interface TripUser {
+  _id: string;
+  username: string;
+}
 
-export interface CardSummit extends Card {
+export interface CardTrip extends Card {
   title: string;
   image: string;
   difficulty: "easy" | "moderate" | "hard" | "extreme";
-  duration: string;
+  duration: number;
   shortDescription: string;
-  startDate: string;
+  date: string;
   location: string;
   country: string;
   description: string;
-  elevation: string;
+  elevation: number;
   ownerId: string;
-  participants: string[];
-  joinRequests: string[];
+  maxParticipants: number;
+  participants: TripUser[];
+  joinRequests: TripUser[];
 }

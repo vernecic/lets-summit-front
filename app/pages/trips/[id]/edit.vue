@@ -3,22 +3,35 @@ import {
   CalendarDate,
   DateFormatter,
   getLocalTimeZone,
+  parseDate,
   today,
 } from "@internationalized/date";
+import type { CardTrip } from "~/types/card";
+
+const config = useRuntimeConfig();
+const route = useRoute();
+const params = route.params as { id: string };
+
+const { data: trip } = await useFetch<CardTrip>(
+  `${config.public.BACKEND_URL}/trips/${params.id}`,
+);
+
+if (!trip.value) {
+  throw createError({ statusCode: 404, statusMessage: "Izlet nije pronađen" });
+}
 
 const state = reactive({
-  title: "",
-  date: "",
-  location: "",
-  country: "",
-  elevation: 3000,
-  difficulty: "",
-  duration: 1,
-  description: "",
-  shortDescription: "",
-  maxParticipants: 10,
+  title: trip.value.title,
+  date: trip.value.date,
+  location: trip.value.location,
+  country: trip.value.country,
+  elevation: trip.value.elevation,
+  difficulty: trip.value.difficulty,
+  duration: trip.value.duration,
+  description: trip.value.description,
+  shortDescription: trip.value.shortDescription,
+  maxParticipants: trip.value.maxParticipants,
 });
-const config = useRuntimeConfig();
 
 const countries = [
   "Croatia",
@@ -38,7 +51,9 @@ const difficulties = [
 ];
 
 const minDate = today(getLocalTimeZone());
-const selectedDate = shallowRef<CalendarDate | null>(null);
+const selectedDate = shallowRef<CalendarDate | null>(
+  state.date ? parseDate(state.date) : null,
+);
 const dateFormatter = new DateFormatter("hr-HR", { dateStyle: "short" });
 
 const formatedDate = computed(() => {
@@ -51,13 +66,21 @@ watch(selectedDate, (value) => {
   state.date = value ? value.toString() : "";
 });
 
+const errorMessage = ref("");
+
 const onSubmit = async () => {
-  await $fetch(`${config.public.BACKEND_URL}/trips`, {
-    method: "POST",
-    body: state,
-    credentials: "include",
-  });
-  await navigateTo("/");
+  errorMessage.value = "";
+  try {
+    await $fetch(`${config.public.BACKEND_URL}/trips/${params.id}`, {
+      method: "PATCH",
+      body: state,
+      credentials: "include",
+    });
+    await navigateTo(`/trips/${params.id}`);
+  } catch (error) {
+    errorMessage.value = "Greška pri uređivanju izleta.";
+    console.error("Greška pri uređivanju izleta, ", error);
+  }
 };
 </script>
 
@@ -65,7 +88,7 @@ const onSubmit = async () => {
   <div
     class="py-20 flex items-center justify-center flex-col px-40 min-h-screen"
   >
-    <h1 class="text-6xl font-bold">Create Trip</h1>
+    <h1 class="text-6xl font-bold">Edit Trip</h1>
 
     <UForm
       :state="state"
@@ -177,9 +200,11 @@ const onSubmit = async () => {
         </UFormField>
       </div>
 
+      <p v-if="errorMessage" class="text-sm text-red-500">{{ errorMessage }}</p>
+
       <div class="flex justify-end gap-3 pt-2">
         <UButton
-          to="/trips"
+          :to="`/trips/${params.id}`"
           color="neutral"
           variant="ghost"
           size="lg"
@@ -193,7 +218,7 @@ const onSubmit = async () => {
           size="lg"
           class="cursor-pointer rounded-full text-black"
         >
-          Create trip
+          Save changes
         </UButton>
       </div>
     </UForm>
